@@ -1,55 +1,39 @@
-import ast
-
-from api.infrastructure.models import Data
+from api.infrastructure.models import Coin
 from django.http import Http404
 from rest_framework.request import HttpRequest
 
-from .domain.serializers.response_serializer import DataSerializer
+from .domain.utilities.days_calculator import days_range
+from .domain.utilities.max_profit_algrt import max_profit
 
 
 class ApiService:
     
-    def get_data(self, id: str):
-        """Retrive the data if the id correspond with the id given
-        params: id, the id passed in the endpoint
+    def get_data_names(self, name: str):
+        """Retrive the names of the coins in the DB with the id
         """
         try:
-            data = Data.objects.get(id_data=id)
-            serializer = DataSerializer(data)
-            return serializer.data
+            names = Coin.objects.only('name').distinct('name')
+            return { 'Coins Names' : names }
         except Data.DoesNotExist as e:
             raise Http404(e)
     
-    def update_data(self, request: HttpRequest):
-        """Update or create the data passed in the request
-        params: request, the request passed in the endpoint
+    def get_close_data(self, symbol: str, date: str):
+        """Select the close value per coin in a selected date
         """
-        serializer = DataSerializer(data=ast.literal_eval(str(request.data).lower()))
-        if serializer.is_valid(raise_exception=True):
-            if Data.objects.filter(id_data=request.data['ID']).exists():
-                Data.objects.filter(id_data=request.data['ID']).update(**serializer.data)
-            else:
-                serializer.save()
+        try:
+            data = Coin.objects.filter(symbol=symbol).filter(date=date)
+            return {'Coin' : symbol, 'Date' : date, 'Close' : data.close }
+        except Data.DoesNotExist as e:
+                raise Http404(e)
+    
 
-    def update_single_record(self, request: HttpRequest, id: str):
-        """Update the data matching the records in the database
-            params: request, the request passed in the endpoint
-                    id, the id passed in the endpoint
+    def get_maximise_profit_data(self, start: str, end: str):
+        """Calculate and return the Maximised Profit for a given range of dates
         """
         try:
-            Data.objects.get(id_data=id)
-            serializer = DataSerializer(data=ast.literal_eval(str(request.data).lower()))
-            if serializer.is_valid():
-                Data.objects.filter(id_data=id).update(**serializer.data)
-        except Data.DoesNotExist as e:
-            raise Http404(e)
-    
-    def delete_data(self, id: str):
-        """delete the record with the corrispondent id
-            params: id, the id passed in the endpoint
-        """
-        try:
-            instance = Data.objects.get(id_data=id)
-            instance.delete()
+            days = days_range(start, end)
+            prices = Coin.objects.filter(created_at__gte=start, created_at__lte=end)
+            mx_profit = max_profit(prices, days)
+            return { 'Start Date': start, 'End Date': end, 'Max Profit': mx_profit }
         except Data.DoesNotExist as e:
             raise Http404(e)

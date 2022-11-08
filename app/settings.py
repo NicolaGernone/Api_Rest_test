@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'api.infrastructure',
-    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -78,21 +77,20 @@ TEMPLATES = [
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework_xml.renderers.XMLRenderer',
+        'rest_framework.renderers.TemplateHTMLRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer'
     ],
     'TEST_REQUEST_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework_xml.renderers.XMLRenderer'
+        'rest_framework_xml.renderers.TemplateHTMLRenderer'
     ],
     'TEST_REQUEST_DEFAULT_FORMAT': [
         'json',
-        'xml'
+        'html'
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 50,
-    'DEFAULT_PARSER_CLASSES': ['rest_framework.parsers.JSONParser'],
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
-    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authentication.TokenAuthentication']
+    'DEFAULT_PARSER_CLASSES': ['rest_framework.parsers.JSONParser']
     
 }
 
