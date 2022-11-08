@@ -7,7 +7,7 @@ down:
 up: build makemigrations migrate
 	docker compose up -d
 
-first: build makemigrations migrate loaddatavcf
+first: build makemigrations migrate
 	docker compose up -d
 
 migrate:
@@ -22,8 +22,8 @@ showmig:
 loaddata:
 	docker compose run --rm api python manage.py loaddata data.json
 
-loaddatavcf:
-	docker compose run --rm api python manage.py loaddatavcf "NA12877_API_10.vcf.gz"
+loaddatacsv:
+	docker compose run --rm api python manage.py loaddatacsv "./archive"
 
 deps: deps_lock
 	docker compose run --rm api poetry install

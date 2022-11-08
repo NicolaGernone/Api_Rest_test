@@ -7,6 +7,9 @@ def db_load(path):
     """Populate the DB with VCF records. Max 5000 records"""
     try:
         data = read_csv(path)
+        print(data[0])
+        print(data[1])
+        '''
         for d in data:
             records, created = Data.objects.get_or_create(chrom=d[0],
                                                             pos=d[1],
@@ -16,6 +19,6 @@ def db_load(path):
                                                             qual=d[5],
                                                             filter=d[6],
                                                             format=d[7],
-                                                            nas=d[8])
+                                                            nas=d[8])'''
     except DataError as e:
         raise DataError(e)
