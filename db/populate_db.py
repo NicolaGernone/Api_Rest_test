@@ -1,10 +1,10 @@
 import random
 from django.db.utils import DataError
-from .vcf_reader import read_vcf_data
-from api.infrastructure.models import Data
+from .csv_reader import read_csv
+from api.infrastructure.models import Coin
 
 def db_load(path):
-    """Populate the DB with VCF records. Max 5000 records"""
+    """Populate the DB with csv records. Max 5000 records"""
     try:
         data = read_csv(path)
         print(data[0])

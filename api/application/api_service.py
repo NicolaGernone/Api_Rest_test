@@ -5,7 +5,6 @@ from rest_framework.request import HttpRequest
 from .domain.utilities.days_calculator import days_range
 from .domain.utilities.max_profit_algrt import max_profit
 
-
 class ApiService:
     
     def get_data_names(self, name: str):

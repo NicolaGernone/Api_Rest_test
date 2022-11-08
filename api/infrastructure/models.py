@@ -1,4 +1,4 @@
-from api.application.domain.entity.csv_entity import (Coin)
+from api.application.domain.entity.coin_entity import Coin
 
 __all__ = [ 
     'Coin'
