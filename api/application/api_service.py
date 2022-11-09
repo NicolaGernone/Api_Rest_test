@@ -1,4 +1,5 @@
 import datetime
+
 from django.http import Http404
 
 from api.application.domain.serializers.coin_close_serializer import \

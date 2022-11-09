@@ -1,0 +1,76 @@
+---
+openapi: 3.0.1
+info:
+  title: Api_CryptoCoins
+  description: Retrive data from Crypto records
+  version: "0.1"
+servers:
+- url: http://localhost:5050
+paths:
+  /coin/names:
+    get:
+      description: Get the names of all coins presents
+      responses:
+        "200":
+          description: list of names
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                "0":
+                  value: '[{"name": "Aave"}, {"name": "Binance Coin"}, {"name": "Bitcoin"}, {"name": "Cardano"}, {"name": "Chainlink"}, {"name": "Cosmos"}, {"name": "Crypto.com Coin"}, {"name": "Dogecoin"}, {"name": "EOS"}, {"name": "Ethereum"}, {"name": "IOTA"}, {"name": "Litecoin"}, {"name": "Monero"}, {"name": "NEM"}, {"name": "Polkadot"}, {"name": "Solana"}, {"name": "Stellar"}, {"name": "TRON"}, {"name": "Tether"}, {"name": "USD Coin"}, {"name": "Uniswap"}, {"name": "Wrapped Bitcoin"}, {"name": "XRP"}]'
+      servers:
+      - url: http://localhost:5050
+    servers:
+    - url: http://localhost:5050
+  /mxprofit/<symbol>/<start_date>/<end_date>:
+    get:
+      description: Giving a Range of dates and a coin symbol, return a best day to buy and sell based on the maximised profit
+      - symbol: String
+      - start_date: String (Y-m-d)
+      - end_date: String (Y-m-d)
+      responses:
+        "200":
+          description: Return a dict with the obtained best times
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+              examples:
+                "0":
+                  value: '{"Buy Day": 4, "Sell Day": 6}'
+      servers:
+      - url: http://localhost:5050
+    servers:
+    - url: http://localhost:5050
+  /coin/<symbol>/<date>:
+    get:
+      description: Given a date and symbol return a list of Close price at thet time for the specific coin
+      symbol: String
+      date: String (Y-m-d)
+      responses:
+        "200":
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                "0":
+                  value: '[{"symbol": "BTC", "date": "2013-04-29T23:59:59Z", "close": "144.5399932861"}]'
+      servers:
+      - url: http://localhost:5050
+    servers:
+    - url: http://localhost:5050
+components:
+  schemas:
+    inline_response_200:
+      type: object
+      properties:
+        Buy Day:
+          type: integer
+        Sell Day:
+          type: integer
