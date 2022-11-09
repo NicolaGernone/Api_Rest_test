@@ -1,12 +1,14 @@
-from api.application.api_service import ApiService
-from api.application.domain.serializers.response_serializer import \
-    DataSerializer
-from api.infrastructure.models import Data
 from django.http import Http404
 from django.test import TestCase
 from model_bakery import baker
 from rest_framework.request import HttpRequest
-from rest_framework.exceptions import ValidationError
+
+from api.application.api_service import ApiService
+from api.application.domain.serializers.coin_close_serializer import \
+    CoinCloseSerializer
+from api.application.domain.serializers.coin_names_serializer import \
+    CoinNamesSerializer
+from api.infrastructure.models import Coin
 
 
 class ApiServiceTest(TestCase):
@@ -14,45 +16,35 @@ class ApiServiceTest(TestCase):
     def setUp(self):
         self.api_service = ApiService()
         self.request = HttpRequest()
-        self.request.data = {"CHROM": "chr1", "POS": 1000, "ALT": "A", "REF": "G", "ID": "rs12345"}
 
-    def test_get_data_ok(self):
-        data = baker.make(Data, id_data='rs12345')
-        response = self.api_service.get_data(id='rs12345')
-        dataSet = DataSerializer(data)
-        self.assertEqual(response, dataSet.data)
+    def get_data_names_ok(self):
+        name = baker.make(Coin, _quantity=5)
+        response = self.api_service.get_data_names()
+        dataSet = CoinNamesSerializer(name, many=True)
+        self.assertEqual( response, dataSet.data)
 
-    def test_get_data_fail(self):
-        baker.make(Data, id_data='rs1')
+    def get_data_names_fail(self):
+        baker.make(Coin, _quantity=5)
         with self.assertRaises(Http404):
-            self.api_service.get_data(id='rs12345')
+            self.api_service.get_data_names()
 
-    def test_update_data_ok(self):
-        baker.make(Data, id_data='rs12345')
-        response = self.api_service.update_data(self.request)
-        self.assertEqual(response, None)
+    def get_close_data_ok(self):
+        close = baker.make(Coin, _quantity=5)
+        response = self.api_service.get_close_data('BTC', '2013-08-09')
+        dataSet = CoinCloseSerializer(close, many=True)
+        self.assertEqual( response, dataSet.data)
 
-    def test_update_data_fail(self):
-        self.request.data = {}
-        with self.assertRaises(ValidationError):
-            self.api_service.update_data(self.request)
-
-    def test_delete_data_ok(self):
-        baker.make(Data, id_data='rs12345')
-        response = self.api_service.delete_data(id='rs12345')
-        self.assertEqual(response, None)
-
-    def test_delete_data_fail(self):
-        baker.make(Data, id_data='rs1')
+    def get_close_data_fail(self):
+        baker.make(Coin, _quantity=5)
         with self.assertRaises(Http404):
-            self.api_service.delete_data(id='rs12345')
+            self.api_service.get_close_data()
 
-    def test_update_single_data_ok(self):
-        baker.make(Data, id_data='rs12345')
-        response = self.api_service.update_single_record(id='rs12345', request=self.request)
-        self.assertEqual(response, None)
+    def get_maximise_profit_data_ok(self):
+        baker.make(Coin, _quantity=5)
+        response = self.api_service.get_maximise_profit_data('BTC', '2013-04-29', '2015-8-30')
+        self.assertEqual( response, { "Buy Day": 4, "Sell Day": 6 })
 
-    def test_update_single_data_fail(self):
-        self.request.data = {}
+    def get_maximise_profit_data_fail(self):
+        baker.make(Coin, _quantity=5)
         with self.assertRaises(Http404):
-            self.api_service.update_single_record(id='rs12345', request=self.request)
+            self.api_service.get_maximise_profit_data()

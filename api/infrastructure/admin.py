@@ -3,6 +3,6 @@ from django.contrib import admin
 from .models import *
 
 
-@admin.register(Data)
+@admin.register(Coin)
 class ImageAdmin(admin.ModelAdmin):
-    list_display=('chrom', 'pos', 'alt', 'ref', "id_data")
+    list_display=('sno', 'name', 'symbol', 'date', 'hight', 'low', 'open', 'close', 'volume', 'marketcap')

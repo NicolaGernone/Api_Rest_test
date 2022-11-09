@@ -1,5 +1,5 @@
-from api.application.domain.entity.vcf_entity import (Data)
+from api.application.domain.entity.coin_entity import Coin
 
 __all__ = [ 
-    'Data'
+    'Coin'
 ]
